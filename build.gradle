@@ -1,0 +1,42 @@
+buildscript {
+    ext.kotlin_version = '1.0.6'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id "com.qixalite.spongestart" version "1.6.0"
+    id 'org.spongepowered.plugin' version '0.8.1'
+}
+
+group = pluginGroup
+version = pluginVersion
+
+dependencies {
+    compile 'org.spongepowered:spongeapi:5.0.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+
+sponge.plugin.id = pluginId
+apply plugin: "kotlin"
+repositories {
+    mavenCentral()
+}
+spongestart{
+    eula = true
+
+    //optional settings, takes latest version by default
+    minecraft = '1.10.2'
+    type = 'bleeding'
+    SpongeForgeVersion = '1.10.2-2202-5.1.0-BETA-2042'
+    SpongeVanillaVersion = '1.10.2-5.0.0-BETA-89'
+}
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+}
