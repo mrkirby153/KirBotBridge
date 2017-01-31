@@ -2,11 +2,12 @@ package me.mrkirby153.kirbotbridge
 
 import com.google.inject.Inject
 import me.mrkirby153.kirbotbridge.config.Configuration
+import me.mrkirby153.kirbotbridge.listener.MainListener
 import me.mrkirby153.kirbotbridge.net.NetworkConnection
-import ninja.leaping.configurate.ConfigurationNode
 import ninja.leaping.configurate.commented.CommentedConfigurationNode
 import ninja.leaping.configurate.loader.ConfigurationLoader
 import org.slf4j.Logger
+import org.spongepowered.api.Sponge
 import org.spongepowered.api.config.DefaultConfig
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.Listener
@@ -33,19 +34,15 @@ class KirBotBridge {
 
     lateinit var networkConnection: NetworkConnection
 
-    lateinit var rootNode: ConfigurationNode
-
 
     @Listener
     fun onServerStart(event: GameStartedServerEvent) {
+        instance = this
         logger!!.info("Loading Configuration")
-        loadConfig()
-
-    }
-
-    fun loadConfig() {
-        Configuration.configurationLoader = confgManager
-        Configuration.loadConfig()
+        Configuration.init()
+        Sponge.getEventManager().registerListeners(this, MainListener(this))
+        networkConnection = NetworkConnection(this, Configuration.config.getNode("bridge", "host").string, Configuration.config.getNode("bridge", "port").int,
+                Configuration.config.getNode("bridge", "password").string)
     }
 
     @Listener
@@ -59,4 +56,7 @@ class KirBotBridge {
 
     }
 
+    companion object {
+        lateinit var instance: KirBotBridge
+    }
 }

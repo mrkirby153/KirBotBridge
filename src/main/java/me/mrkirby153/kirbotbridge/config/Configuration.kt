@@ -1,34 +1,40 @@
 package me.mrkirby153.kirbotbridge.config
 
+import me.mrkirby153.kirbotbridge.KirBotBridge
 import ninja.leaping.configurate.commented.CommentedConfigurationNode
 import ninja.leaping.configurate.loader.ConfigurationLoader
 
 object Configuration {
+    private var loader: ConfigurationLoader<CommentedConfigurationNode> = KirBotBridge.instance.confgManager
 
-    var BOT_HOST_DEFAULT = "localhost"
-    var BOT_PORT_DEFAULT: Int = 7563
-    var BOT_PASSWORD_DEFAULT = "<CHANGE ME>"
+    var config = loader.load()
 
+    fun init() {
+        if (config.getNode("bridge", "channel").isVirtual) {
+            config.getNode("bridge", "channel").value = "<CHANGE ME>"
+        }
 
-    var BOT_HOST: String = "localhost"
-    var BOT_PORT: Int = 7563
-    var BOT_PASSWORD: String = "<CHANGE ME>"
+        if (config.getNode("bridge", "guild").isVirtual) {
+            config.getNode("bridge", "guild").value = "<CHANGE ME>"
+        }
 
-    lateinit var configurationLoader: ConfigurationLoader<CommentedConfigurationNode>
+        if (config.getNode("bridge", "host").isVirtual) {
+            config.getNode("bridge", "host").value = "localhost"
+        }
 
-    fun loadConfig() {
-        val rootNode = configurationLoader.createEmptyNode()
-        BOT_HOST = rootNode.getNode("bot", "host").getString(BOT_HOST_DEFAULT)
-        BOT_PORT = rootNode.getNode("bot", "port").getInt(BOT_PORT_DEFAULT)
-        BOT_PASSWORD = rootNode.getNode("bot", "password").getString(BOT_PASSWORD_DEFAULT)
+        if (config.getNode("bridge", "port").isVirtual) {
+            config.getNode("bridge", "port").value = 7563
+        }
+
+        if (config.getNode("bridge", "password").isVirtual) {
+            config.getNode("bridge", "password").value = "<CHANGE ME>"
+        }
+
         saveConfig()
+
     }
 
     fun saveConfig() {
-        val rootNode = configurationLoader.createEmptyNode()
-        rootNode.getNode("bot", "host").value = BOT_HOST
-        rootNode.getNode("bot", "port").value = BOT_PORT
-        rootNode.getNode("bot", "password").value = BOT_PASSWORD
-        configurationLoader.save(rootNode)
+        loader.save(config)
     }
 }
